@@ -1,138 +1,73 @@
-# FotoFood - Journal Screen Implementation Plan
+# FotoFood - Journal Screen Implementation Plan (MVP First)
 
-## Phase 1: Project Setup and Dependencies
-- [ ] Initialize TypeScript configuration
-  - Create/update tsconfig.json with strict mode
-  - Add necessary type definitions
-- [ ] Install core dependencies
+## Phase 1: Minimal Setup (1-2 hours)
+- [ ] Basic project structure
+  ```
+  foto-food/
+  ├── components/
+  ├── screens/
+  └── navigation/
+  ```
+- [ ] Essential dependencies
   ```bash
   npm install @react-navigation/native @react-navigation/bottom-tabs
   npm install react-native-screens react-native-safe-area-context
-  npm install @expo/vector-icons date-fns
-  ```
-- [ ] Set up folder structure
-  ```
-  src/
-    ├── components/
-    │   ├── common/
-    │   └── journal/
-    ├── constants/
-    │   ├── colors.ts
-    │   └── theme.ts
-    ├── navigation/
-    ├── screens/
-    └── types/
   ```
 
-## Phase 2: Design System and Theme Setup
-- [ ] Create color palette in `constants/colors.ts`
-  - Define primary, secondary colors
-  - Define text colors
-  - Define background colors
-  - Define status colors (success, error, etc.)
-- [ ] Create theme configuration in `constants/theme.ts`
-  - Define typography styles
-  - Define spacing scale
-  - Define border radiuses
-  - Define shadow styles
-- [ ] Create common components
-  - [ ] CustomText component with typography styles
-  - [ ] SafeAreaWrapper component
-  - [ ] IconButton for header actions
-
-## Phase 3: Navigation Setup
-- [ ] Set up bottom tab navigator
-  - Create basic navigator structure
-  - Configure tab bar styling
-  - Add placeholder screens
-- [ ] Configure Journal screen header
-  - Add notification bell icon
-  - Add settings gear icon
-- [ ] Style the central "+" button
-  - Custom tab bar component
-  - Floating action button styling
-
-## Phase 4: Timeline Components
-- [ ] Create TimelineCard component
+## Phase 2: Basic UI Components (2-3 hours)
+- [ ] Create simple MealCard component
   ```typescript
-  type TimelineCardProps = {
+  type MealCardProps = {
     imageUrl: string;
     timestamp: Date;
-    duration?: string;
-    status?: 'fasting' | 'regular';
-    onPress: () => void;
   }
   ```
-- [ ] Create TimelineLine component
-  - Vertical line with time markers
-  - Time labels
-  - Status indicators
-- [ ] Create TimeMarker component
-  - Circular marker
-  - Time label
-  - Connection to timeline line
+  - Basic card with image and time
+  - Simple styling (no complex timeline yet)
 
-## Phase 5: Journal Screen Implementation
-- [ ] Create mock data structure
-  ```typescript
-  type MealEntry = {
-    id: string;
-    imageUrl: string;
-    timestamp: Date;
-    duration: string;
-    status: 'fasting' | 'regular';
-  }
-  ```
-- [ ] Implement JournalScreen component
-  - Setup screen layout
-  - Add SafeAreaWrapper
-  - Implement FlatList with timeline items
-- [ ] Add timeline visualization
-  - Integrate TimelineLine component
-  - Position TimelineCards correctly
-  - Add proper spacing and alignment
+- [ ] Create basic bottom tab navigation
+  - Journal tab (main screen)
+  - Add button (center)
+  - Dashboard tab (empty for now)
 
-## Phase 6: Polish and Optimization
+## Phase 3: Working List View (2-3 hours)
+- [ ] Create basic JournalScreen
+  - Simple FlatList of MealCards
+  - Basic mock data (3-4 entries)
+  - Minimal styling
+
+## Next Iterations (After MVP is working):
+
+### Iteration 1: Timeline Visual (2-3 hours)
+- [ ] Add vertical timeline line
+- [ ] Add time markers
+- [ ] Connect cards to timeline
+
+### Iteration 2: Enhanced UI (2-3 hours)
+- [ ] Improve card design
+- [ ] Add duration indicators
+- [ ] Add status indicators (fasting/regular)
+
+### Iteration 3: Polish (2-3 hours)
 - [ ] Add loading states
-  - Skeleton loading for cards
-  - Fade-in animation for images
-- [ ] Implement proper error handling
-  - Error boundaries
-  - Fallback UI for failed image loads
-- [ ] Add pull-to-refresh functionality
-- [ ] Optimize FlatList performance
-  - Implement proper windowing
-  - Add memory optimization
+- [ ] Add pull-to-refresh
+- [ ] Improve performance
 
-## Phase 7: Testing and Documentation
-- [ ] Add component documentation
-  - Props documentation
-  - Usage examples
-- [ ] Add basic unit tests
-  - Test timeline calculations
-  - Test component rendering
-- [ ] Manual testing checklist
-  - [ ] Test on iOS simulator
-  - [ ] Verify all animations are smooth
-  - [ ] Check memory usage
-  - [ ] Verify accessibility features
+### Future Enhancements
+- Theme system
+- TypeScript strict mode
+- Error handling
+- Unit tests
+- Documentation
 
-## Next Steps and Future Considerations
-- Integration with camera/image picker
-- Local storage implementation
-- Notification system setup
-- Settings screen implementation
+## Development Approach
+1. Start with minimal, working features
+2. Get user feedback early
+3. Iterate based on feedback
+4. Add polish incrementally
 
 ## Notes
-- Follow TypeScript best practices throughout implementation
-- Maintain consistent styling using the theme system
-- Keep accessibility in mind from the start
-- Document all components and utilities
-- Use Git commits with clear messages for each completed task
-
-Remember to:
-- Test frequently
-- Commit often
-- Keep the code clean and documented
-- Follow the established naming conventions
-- Consider edge cases in the UI 
+- Focus on functionality first, polish later
+- Commit after each working feature
+- Test on device frequently
+- Keep code simple and readable 
