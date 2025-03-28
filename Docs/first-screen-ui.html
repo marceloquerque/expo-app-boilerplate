@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FotoFood - Food Journal App</title>
+    <!-- Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        /* Phone frame style */
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 10px solid #000;
+            margin: 20px;
+        }
+        
+        /* Timeline indicator */
+        .timeline-indicator {
+            position: absolute;
+            left: 15px;
+            width: 2px;
+            background-color: #FF6B35;
+            z-index: 1;
+            top: 35px;
+            bottom: 35px;
+        }
+        
+        /* Timeline indicator fade effects */
+        .timeline-indicator::before,
+        .timeline-indicator::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50px;
+        }
+
+        .timeline-indicator::before {
+            top: -50px;
+            background: linear-gradient(to top, #FF6B35, transparent);
+        }
+
+        .timeline-indicator::after {
+            bottom: -50px;
+            background: linear-gradient(to bottom, #FF6B35, transparent);
+        }
+        
+        /* Scroll arrows */
+        .timeline-arrow {
+            position: absolute;
+            left: 16px;
+            width: 10px;
+            height: 10px;
+            border-left: 2px solid #FF6B35;
+            border-top: 2px solid #FF6B35;
+            z-index: 3;
+            animation: arrowPulse 2s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .timeline-arrow-up {
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .timeline-arrow-down {
+            transform: translate(-50%, 0) rotate(-135deg);
+            bottom: 45px;
+            animation-name: arrowPulseDown;
+        }
+
+        @keyframes arrowPulseUp {
+            0%, 100% {
+                transform: translate(-50%, 0) rotate(45deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -4px) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes arrowPulseDown {
+            0%, 100% {
+                transform: translate(-50%, 0) rotate(-135deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, 4px) rotate(-135deg);
+                opacity: 1;
+            }
+        }
+
+        /* Add this to fade out arrows when timeline is at limits */
+        .timeline-arrow.inactive {
+            animation: none;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Timeline entry spacing */
+        .timeline-entry {
+            position: absolute;
+            width: calc(100% - 12px);
+            height: auto;
+            margin: 0;
+        }
+        
+        /* Time dot for timeline */
+        .time-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #FFA500;
+            position: absolute;
+            left: 16px;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        
+        /* Time dot completed state */
+        .time-dot.completed {
+            border-color: #03ab03;
+        }
+        
+        /* Time label for timeline */
+        .time-label {
+            position: absolute;
+            left: 23px;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #666;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .fasting-time {
+            position: absolute;
+            top: -20px;
+            right: 40px;
+            font-size: 10px;
+            color: #b6b6b6;
+        }
+        
+        /* Time difference label */
+        .time-diff {
+            position: absolute;
+            top: -5px;
+            right: 30px;
+            font-size: 10px;
+            color: #FF6B35;
+            background-color: white;
+            padding: 2px 6px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+        
+        /* Timeline meal card */
+        .meal-card {
+            width: calc(100% - 80px);
+            margin-left: 65px;
+            margin-top: 5px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* Background time markers */
+        .time-marker {
+            /* display: none; */
+            position: absolute;
+            left: -30px;
+            font-size: 8px;
+            color: #d4d4d4;
+            z-index: 0;
+            width: 90%;
+            border-top: 1px dashed #eee;
+            padding-top: 2px;
+            padding-left: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .time-marker.visible {
+            opacity: 1;
+        }
+        
+        /* Reflection status dot */
+        .reflection-status {
+            display: none;
+            position: absolute;
+            bottom: 110px;
+            right: 190px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            z-index: 4;
+        }
+        
+        /* Colors for reflection status */
+        .reflection-pending {
+            background-color: #FFA500;
+        }
+        
+        .reflection-completed {
+            background-color: #03ab03;
+        }
+        
+        /* Custom CSS for floating add button */
+        .add-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #FF6B35;
+            box-shadow: 0 4px 6px rgba(255, 107, 53, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Scroll area */
+        .scrollable {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            height: 100%;
+            position: relative;
+        }
+        
+        .scrollable::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Timeline content container */
+        .timeline-content {
+            position: relative;
+            min-height: 100%;
+            padding: 20px 0;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Ensure bottom navigation doesn't overlap with content */
+        .bottom-nav {
+            margin-top: auto;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-wrap justify-center">
+    <!-- Journal Page -->
+    <div class="phone-frame bg-white flex flex-col">
+        <!-- Header -->
+        <div class="px-6 py-4 flex justify-between items-center ">
+            <h1 class="text-3xl font-extrabold">Journal</h1>
+            <div class="flex items-center space-x-4">
+                <i class="fas fa-bell text-gray-800"></i>
+                <i class="fas fa-cog text-gray-800"></i>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="px-6 pt-2 border-b border-gray-100">
+            <div class="flex">
+                <div class="mr-8 pb-2 border-b-2 border-black">
+                    <span class="font-medium">Timeline</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fasting Info -->
+        <!-- <div class="px-6 py-3 bg-gray-50 text-center">
+            <div class="flex justify-center items-center">
+                <span class="text-sm font-medium">Time since last meal</span>
+                <span class="ml-2 text-xs text-gray-500">14h 45m</span>
+            </div>
+        </div> -->
+        
+        <!-- Timeline Content -->
+        <div class="relative px-6 py-3 flex-1 flex flex-col overflow-y-auto scrollable">
+            <div class="timeline-content">
+                <!-- Background time markers -->
+                <div class="timeline-arrow timeline-arrow-up" style="top: 50px;"></div>
+                <div class="time-marker visible" style="top: 50px;">05:00</div>
+                <div class="time-marker visible" style="top: 100px;">10:00</div>
+                <div class="time-marker visible" style="top: 150px;">12:00</div>
+                <div class="time-marker visible" style="top: 150px;">14:00</div>
+                <div class="time-marker visible" style="top: 200px;">17:00</div>
+                <div class="time-marker visible" style="top: 250px;">22:00</div>
+                <div class="time-marker" style="top: 25px;">03:00</div>
+                <div class="time-marker" style="top: 0;">00:00</div>
+                <div class="time-marker" style="top: 275px;">23:00</div>
+                <div class="timeline-arrow timeline-arrow-down"></div>
+                
+                <!-- Orange timeline line -->
+                <div class="timeline-indicator"></div>
+                
+                <!-- First Meal Entry - Breakfast -->
+                <div class="timeline-entry" style="--time-gap: 0px;">
+                    <div class="time-dot completed" style="top: 50%;"></div>
+                    <div class="time-label" style="top: 50%;">07:15</div>
+                    <div class="fasting-time">Fasting</div>
+                    <div class="time-diff">14h 45m</div>
+                    <div class="meal-card">
+                        <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=250&q=80" alt="Breakfast" class="w-full h-32 object-cover">
+                        <div class="reflection-status reflection-completed"></div>
+                    </div>
+                </div>
+                
+                <!-- Second Meal Entry - Lunch -->
+                <div class="timeline-entry" style="--time-gap: 124px;">
+                    <div class="time-dot completed" style="top: 50%;"></div>
+                    <div class="time-label" style="top: 50%;">12:25</div>
+                    
+                    <div class="time-diff">5h 10m</div>
+                    <div class="meal-card">
+                        <img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=250&q=80" alt="Lunch" class="w-full h-32 object-cover">
+                        <div class="reflection-status reflection-completed"></div>
+                    </div>
+                </div>
+                
+                <!-- Third Meal Entry - Dinner -->
+                <div class="timeline-entry" style="--time-gap: 320px;">
+                    <div class="time-dot" style="top: 50%;"></div>
+                    <div class="time-label" style="top: 50%;">15:27</div>
+                    <div class="time-diff">3h 2m</div>
+                    <div class="meal-card">
+                        <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&h=250&q=80" alt="Dinner" class="w-full h-32 object-cover">
+                        <div class="reflection-status reflection-pending"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav border-t border-gray-100 bg-white">
+            <div class="flex justify-between items-center px-6 py-4">
+                <div class="flex flex-col items-center w-1/3">
+                    <i class="fas fa-utensils text-black"></i>
+                    <span class="text-xs mt-1 text-black">Journal</span>
+                </div>
+                
+                <!-- Floating Add Button -->
+                <div class="relative -top-6 w-1/3 flex justify-center">
+                    <button class="add-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-col items-center w-1/3">
+                    <i class="fas fa-chart-bar text-gray-400"></i>
+                    <span class="text-xs mt-1 text-gray-400">Dashboard</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- JS for interactive elements -->
+    <script>
+        // Debug logging
+        console.log('FotoFood UI loaded successfully');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Debug message
+            console.log('DOM fully loaded and parsed');
+            
+            // Handle timeline scrolling and marker visibility
+            const timelineContent = document.querySelector('.timeline-content');
+            const timeMarkers = document.querySelectorAll('.time-marker');
+            const upArrow = document.querySelector('.timeline-arrow-up');
+            const downArrow = document.querySelector('.timeline-arrow-down');
+            
+            function updateMarkerVisibility() {
+                const containerRect = timelineContent.getBoundingClientRect();
+                
+                timeMarkers.forEach(marker => {
+                    const markerRect = marker.getBoundingClientRect();
+                    const isInView = markerRect.top >= containerRect.top - 50 && 
+                                   markerRect.bottom <= containerRect.bottom + 50;
+                    
+                    if (isInView) {
+                        marker.classList.add('visible');
+                    } else {
+                        // Only hide markers outside 5 AM - 10 PM range
+                        const time = marker.textContent;
+                        const hour = parseInt(time.split(':')[0]);
+                        const isPM = time.includes('PM');
+                        const normalizedHour = isPM && hour !== 12 ? hour + 12 : hour;
+                        
+                        if (normalizedHour < 5 || normalizedHour > 22) {
+                            marker.classList.remove('visible');
+                        }
+                    }
+                });
+                
+                // Update arrow visibility with new animation states
+                const isAtTop = timelineContent.scrollTop === 0;
+                const isAtBottom = timelineContent.scrollTop + timelineContent.clientHeight >= timelineContent.scrollHeight;
+                
+                if (isAtTop) {
+                    upArrow.classList.add('inactive');
+                } else {
+                    upArrow.classList.remove('inactive');
+                }
+                
+                if (isAtBottom) {
+                    downArrow.classList.add('inactive');
+                } else {
+                    downArrow.classList.remove('inactive');
+                }
+            }
+            
+            timelineContent.addEventListener('scroll', updateMarkerVisibility);
+            window.addEventListener('resize', updateMarkerVisibility);
+            
+            // Initial visibility check
+            updateMarkerVisibility();
+            
+            // Calculate and set dynamic timeline spacing
+            function calculateTimelineSpacing() {
+                const timelineEntries = document.querySelectorAll('.timeline-entry:not(.hidden)');
+                const timelineContainer = document.querySelector('.timeline-content');
+                const availableHeight = timelineContainer.clientHeight;
+                
+                // If no entries, handle specially
+                if (timelineEntries.length === 0) {
+                    document.querySelector('.timeline-indicator').style.display = 'none';
+                    return;
+                }
+                
+                // Define times for each entry (using 24-hour format for calculation)
+                const entryTimes = [];
+                timelineEntries.forEach(entry => {
+                    const timeLabel = entry.querySelector('.time-label').textContent;
+                    let [hours, minutes] = timeLabel.split(':').map(Number);
+                    
+                    // Convert to minutes since midnight
+                    const minutesSinceMidnight = hours * 60 + minutes;
+                    entryTimes.push(minutesSinceMidnight);
+                });
+                
+                // Constants for layout
+                const MIN_ENTRY_HEIGHT = 150; // Minimum height for each meal entry
+                const ENTRY_TOP_PADDING = 50; // Padding at the top of timeline
+                const ENTRY_BOTTOM_PADDING = 50; // Padding at the bottom
+                
+                // Find min and max times to determine visible range
+                const earliestMealTime = Math.min(...entryTimes);
+                const latestMealTime = Math.max(...entryTimes);
+                
+                // Set minimum visible range from 5am (300 minutes) to 22pm (1320 minutes)
+                const minTime = Math.min(300, earliestMealTime - 120); 
+                const maxTime = Math.max(1320, latestMealTime + 120);
+                
+                // Calculate the required height for entries with minimum spacing
+                const requiredEntriesHeight = timelineEntries.length * MIN_ENTRY_HEIGHT;
+                const availableTimelineHeight = availableHeight - ENTRY_TOP_PADDING - ENTRY_BOTTOM_PADDING;
+                
+                // Determine if we need to scale based on time or enforce minimum spacing
+                const timeBasedHeight = availableTimelineHeight;
+                const minSpacingHeight = requiredEntriesHeight;
+                
+                // Use the larger of the two to ensure proper spacing
+                const effectiveHeight = Math.max(timeBasedHeight, minSpacingHeight);
+                
+                // Recalculate visible time range if necessary
+                const visibleTimeRange = maxTime - minTime;
+                let pixelsPerMinute = effectiveHeight / visibleTimeRange;
+                
+                console.log('Time range:', minTime, 'to', maxTime, 'minutes');
+                console.log('Earliest meal:', earliestMealTime, 'Latest meal:', latestMealTime);
+                console.log('Available height:', availableHeight, 'pixels');
+                console.log('Required entries height:', requiredEntriesHeight, 'pixels');
+                console.log('Effective height:', effectiveHeight, 'pixels');
+                console.log('Pixels per minute:', pixelsPerMinute);
+                
+                // Create a mapping of ideal positions
+                const idealPositions = entryTimes.map(time => 
+                    (time - minTime) * pixelsPerMinute + ENTRY_TOP_PADDING
+                );
+                
+                // Adjust positions to ensure minimum spacing
+                const adjustedPositions = [...idealPositions];
+                for (let i = 1; i < adjustedPositions.length; i++) {
+                    const minPosition = adjustedPositions[i-1] + MIN_ENTRY_HEIGHT;
+                    if (adjustedPositions[i] < minPosition) {
+                        adjustedPositions[i] = minPosition;
+                    }
+                }
+                
+                console.log('Ideal positions:', idealPositions);
+                console.log('Adjusted positions:', adjustedPositions);
+                
+                // Position each entry based on adjusted positions
+                timelineEntries.forEach((entry, index) => {
+                    const topPosition = adjustedPositions[index];
+                    
+                    // Calculate proper positioning
+                    entry.style.position = 'absolute';
+                    entry.style.top = `${topPosition}px`;
+                    entry.style.left = '0';
+                    entry.style.width = '100%';
+                    
+                    // Set time dot position
+                    const timeDot = entry.querySelector('.time-dot');
+                    if (timeDot) {
+                        timeDot.style.top = '16px'; 
+                    }
+                    
+                    // Set time label position
+                    const timeLabel = entry.querySelector('.time-label');
+                    if (timeLabel) {
+                        timeLabel.style.top = '16px';
+                    }
+                    
+                    console.log(`Entry at ${entryTimes[index]} minutes positioned at ${topPosition}px`);
+                    
+                    // Calculate time difference for entries after the first
+                    if (index > 0) {
+                        const diffMinutes = entryTimes[index] - entryTimes[index-1];
+                        const hours = Math.floor(diffMinutes / 60);
+                        const minutes = Math.round(diffMinutes % 60);
+                        const diffText = `${hours}h ${minutes}m`;
+                        
+                        // Update the time difference label
+                        const timeLabel = entry.querySelector('.time-diff');
+                        if (timeLabel) {
+                            timeLabel.textContent = diffText;
+                        }
+                    }
+                });
+                
+                // Make sure the timeline container is tall enough
+                if (timelineEntries.length > 0) {
+                    const lastEntryPosition = adjustedPositions[adjustedPositions.length - 1];
+                    const requiredContainerHeight = lastEntryPosition + MIN_ENTRY_HEIGHT + ENTRY_BOTTOM_PADDING;
+                    timelineContainer.style.minHeight = `${requiredContainerHeight}px`;
+                }
+                
+                // Position time markers based on time of day
+                const timeMarkers = document.querySelectorAll('.time-marker');
+                
+                timeMarkers.forEach(marker => {
+                    const hourText = marker.textContent;
+                    const hour = parseInt(hourText.split(':')[0]);
+                    const minutesSinceMidnight = hour * 60;
+                    
+                    // Only show markers within the visible time range with some buffer
+                    if (minutesSinceMidnight >= minTime - 60 && minutesSinceMidnight <= maxTime + 60) {
+                        marker.classList.add('visible');
+                        const markerPosition = (minutesSinceMidnight - minTime) * pixelsPerMinute + ENTRY_TOP_PADDING;
+                        marker.style.top = `${markerPosition}px`;
+                        console.log(`Marker at ${hourText} positioned at ${markerPosition}px`);
+                    } else {
+                        marker.classList.remove('visible');
+                    }
+                });
+            }
+            
+            // Call on load
+            calculateTimelineSpacing();
+            
+            // Recalculate on window resize
+            window.addEventListener('resize', calculateTimelineSpacing);
+            
+            // Add animation when a new meal is logged
+            function animateNewMeal() {
+                const lastEntry = document.querySelector('.timeline-entry:last-child');
+                if (lastEntry) {
+                    lastEntry.style.opacity = '0';
+                    lastEntry.style.transform = 'translateY(20px)';
+                    lastEntry.style.transition = 'opacity 0.5s, transform 0.5s';
+                    
+                    setTimeout(() => {
+                        lastEntry.style.opacity = '1';
+                        lastEntry.style.transform = 'translateY(0)';
+                    }, 100);
+                    
+                    // Recalculate spacing with animation
+                    setTimeout(calculateTimelineSpacing, 200);
+                }
+            }
+            
+            // Add click event for add button
+            const addButton = document.querySelector('.add-btn');
+            if (addButton) {
+                addButton.addEventListener('click', function() {
+                    console.log('Add button clicked');
+                    // This would be where you'd add a new meal in a real app
+                    // Simulate adding a meal with animation
+                    animateNewMeal();
+                });
+            }
+        });
+    </script>
+    
+      
+        
+    
+</body>
+</html>
