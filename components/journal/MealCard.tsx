@@ -19,24 +19,57 @@ export const MealCard: React.FC<MealCardProps> = ({ imageUrl, timestamp }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.time}>{formatTime(timestamp)}</Text>
-            <View style={styles.card}>
-                <Image
-                    source={{ uri: imageUrl }}
-                    style={styles.image}
-                    resizeMode="cover"
-                />
+            {/* Timeline dot */}
+            <View style={styles.timelineContainer}>
+                <View style={styles.dot} />
+                <Text style={styles.time}>{formatTime(timestamp)}</Text>
+            </View>
+
+            {/* Card */}
+            <View style={styles.cardContainer}>
+                <View style={styles.card}>
+                    <Image
+                        source={{ uri: imageUrl }}
+                        style={styles.image}
+                        resizeMode="cover"
+                    />
+                </View>
             </View>
         </View>
     );
 };
 
 const { width } = Dimensions.get('window');
+const TIMELINE_DOT_SIZE = 12;
+const TIMELINE_WIDTH = 80; // Width reserved for timeline
 
 const styles = StyleSheet.create({
     container: {
+        flexDirection: 'row',
         marginVertical: 10,
-        marginHorizontal: 16,
+    },
+    timelineContainer: {
+        width: TIMELINE_WIDTH,
+        alignItems: 'center',
+        paddingTop: 8,
+    },
+    dot: {
+        width: TIMELINE_DOT_SIZE,
+        height: TIMELINE_DOT_SIZE,
+        borderRadius: TIMELINE_DOT_SIZE / 2,
+        backgroundColor: '#FF6B6B',
+        borderWidth: 2,
+        borderColor: 'white',
+        marginBottom: 4,
+    },
+    time: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#666',
+    },
+    cardContainer: {
+        flex: 1,
+        paddingRight: 16,
     },
     card: {
         backgroundColor: 'white',
@@ -51,14 +84,8 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     image: {
-        width: width - 32, // Full width minus margins
-        height: width * 0.6, // Aspect ratio 5:3
+        width: '100%',
+        height: width * 0.5, // Adjusted aspect ratio
         borderRadius: 12,
-    },
-    time: {
-        fontSize: 16,
-        fontWeight: '500',
-        marginBottom: 8,
-        color: '#333',
     },
 }); 
