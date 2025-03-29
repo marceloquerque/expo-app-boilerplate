@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet, Dimensions, Platform } from 'react-native';
+import { FastingBubble } from './FastingBubble';
+import { formatTime } from '../../utils/dateUtils';
 
 // Define props interface as specified in the plan
 export interface MealCardProps {
     imageUrl: string;
     timestamp: Date;
+    previousMealTime?: Date; // Optional: only provided if there's a previous meal
 }
 
 const { width } = Dimensions.get('window');
@@ -23,16 +26,11 @@ const COLORS = {
     shadow: '#000000',
 };
 
-export const MealCard: React.FC<MealCardProps> = ({ imageUrl, timestamp }) => {
-    // Format time to display as HH:mm
-    const formatTime = (date: Date) => {
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-        }).replace(/:/g, ':'); // Ensure consistent colon style
-    };
-
+export const MealCard: React.FC<MealCardProps> = ({
+    imageUrl,
+    timestamp,
+    previousMealTime
+}) => {
     return (
         <View style={styles.container}>
             <View style={styles.timelineContainer}>
@@ -44,16 +42,26 @@ export const MealCard: React.FC<MealCardProps> = ({ imageUrl, timestamp }) => {
                 <Text style={styles.time}>{formatTime(timestamp)}</Text>
             </View>
 
-            {/* Card */}
-            <View style={styles.cardContainer}>
-                <View style={styles.card}>
-                    <Image
-                        source={{ uri: imageUrl }}
-                        style={styles.image}
-                        resizeMode="cover"
-                    // TODO: Add loading state handling
-                    // TODO: Add error handling for failed loads
+            <View style={styles.contentContainer}>
+                {/* Fasting Bubble */}
+                {previousMealTime && (
+                    <FastingBubble
+                        previousMealTime={previousMealTime}
+                        currentMealTime={timestamp}
                     />
+                )}
+
+                {/* Card */}
+                <View style={styles.cardContainer}>
+                    <View style={styles.card}>
+                        <Image
+                            source={{ uri: imageUrl }}
+                            style={styles.image}
+                            resizeMode="cover"
+                        // TODO: Add loading state handling
+                        // TODO: Add error handling for failed loads
+                        />
+                    </View>
                 </View>
             </View>
         </View>
@@ -73,14 +81,14 @@ const styles = StyleSheet.create({
     timelineLineTop: {
         position: 'absolute',
         top: 0,
-        width: 2,
+        width: TIMELINE_LINE_WIDTH,
         height: '50%',
         backgroundColor: COLORS.timeline,
     },
     timelineLineBottom: {
         position: 'absolute',
         bottom: 0,
-        width: 2,
+        width: TIMELINE_LINE_WIDTH,
         height: '50%',
         backgroundColor: COLORS.timeline,
     },
@@ -94,9 +102,9 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     dot: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
+        width: TIMELINE_DOT_SIZE,
+        height: TIMELINE_DOT_SIZE,
+        borderRadius: TIMELINE_DOT_SIZE / 2,
         backgroundColor: COLORS.accent,
     },
     time: {
@@ -109,9 +117,12 @@ const styles = StyleSheet.create({
             android: 'sans-serif-medium',
         }),
     },
-    cardContainer: {
+    contentContainer: {
         flex: 1,
         paddingRight: 16,
+    },
+    cardContainer: {
+        flex: 1,
     },
     card: {
         backgroundColor: COLORS.cardBackground,
