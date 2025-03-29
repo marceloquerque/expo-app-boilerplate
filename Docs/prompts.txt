@@ -1,0 +1,137 @@
+# PROMPTS
+
+/document
+Before proceeding with any coding task, create or update a file in the @Docs directory listing all files created or modified during our interaction, documenting their purpose and functionality.
+
+- For new files, use this 4-part structure:
+  1. File Name and Path: State the full name and location (e.g., "components/journal/MealCard.tsx").
+  2. Purpose: Explain what the file does in the app (e.g., "Displays meal entries in the journal timeline").
+  3. Functionality: Describe how it works, including key components or logic (e.g., "Renders a card with an image and timestamp using TypeScript props").
+  4. Notes: Add extra details like dependencies or tips (e.g., "Uses @expo/vector-icons; adjust styling for larger screens").
+- For modified files, update their entry in the @Docs file:
+  - Keep the original 4-part structure.
+  - Add an "Updates" subsection under Notes to explain changes, why they were made, and their impact (e.g., "Updates: Added delete button; requires onDelete prop").
+  - Include the Git commit message after each update (e.g., "Commit: feat: add delete button").
+- At the end of the file, add a "Dependencies Added" section listing new dependencies and their purpose (e.g., "@expo/vector-icons - Adds icons to buttons").
+
+/guide
+Act as a mentor for a junior developer on this task. Provide clear, step-by-step instructions, specifying which files to find and how to edit them. You are the Architect agent directing the Editor or Tests Generator agent.
+
+/update-progress
+Update the .md file in @Docs by marking completed tasks with ✅ based on our current progress.
+
+/design
+Analyze and plan the system design.
+- Consider the project’s scale, constraints, performance needs, and requirements. Write a 3-5 paragraph tradeoff analysis comparing design options.
+- Ask 4-6 clear questions about the system’s scale and goals before proposing a plan. After answers, draft a detailed system design and request approval.
+- If feedback is given, discuss tradeoffs, revise the design, and ask for approval again.
+
+/create-plan
+Create a phased implementation plan for the [app-name] app based on @[docs-folder]/[prd-file].md and @[docs-folder]/[ui-file].md, using a UI-first approach.
+- Split it into phases (e.g., "Basic Structure", "Layout", "Features") with clear steps, each with a checkbox [ ].
+- Start with basic components and functionality, then improve layout, and later add features like data and navigation.
+- Keep steps small and testable for quick wins (e.g., "Show a card on screen").
+- Stay flexible for tweaks as we go.
+- Save it as [app-name]-plan.md in @[docs-folder].
+- End with: "Here’s the plan in @[docs-folder]/[app-name]-plan.md. Do you approve?"
+
+/plan
+Create a step-by-step plan for a specific task in the [app-name] app, without coding.
+- List assumptions and ask 3-5 clear questions if I haven’t explained enough.
+- For each step, include:
+  - What to do (e.g., "Add a delete button").
+  - Why it’s needed (e.g., "To remove entries").
+  - Files to change or create (e.g., "[component-folder]/MealCard.tsx").
+  - Risks (e.g., "Might break layout if not styled").
+- End with: "Here’s the task plan. Do you approve?"
+- If approved:
+  1. Check all related code files.
+  2. Get full context.
+  3. Save it as [task-name]-plan.md in @[docs-folder].
+  4. Say: "Plan approved. [task-name]-plan.md created in @[docs-folder]. What’s next?"
+- If not approved, tweak it based on feedback and ask again.
+
+/implement
+Follow the plan to implement the tasks.
+- Go step-by-step, asking for confirmation after each step.
+- Use: "Step [number] completed: [description]. Proceed to step [next number]?"
+
+/next-step
+Procedure implementing the next step of the plan.
+- Follow the plan, asking for confirmation after each step.
+- Use: "Step [number] completed: [description]. Proceed to step [next number]?"
+
+/debug
+Diagnose and suggest fixes for issues based on context.
+- For console errors, collect logs and describe the issue.
+- For runtime errors, provide the error message and stack trace.
+- For logic errors, ask about expected vs. observed behavior.
+- Link issues to specific files or lines and suggest causes.
+
+/debug-logs
+Use the browser-tools MCP, Collect console logs and take a screenshot of the app to troubleshoot issues.
+
+/review-diffs
+Analyze Git diff (staged and unstaged changes).
+- Spot issues, inconsistencies, or improvements.
+- Refer to @project-context.md and note tradeoffs for new code.
+- Report findings with file, line, issue, and fix suggestion.
+
+/suggest
+Offer suggestions to improve the current code based on context.
+- Consider refactoring, best practices, error prevention, or UI enhancements.
+- Analyze the file, cursor position, and nearby code.
+- Explain the reasoning and reference @project-context.md if relevant.
+
+# NEW PROMPTS
+
+/explore
+Help me learn a new React Native, Expo, or Next.js concept by explaining it in simple terms.
+- Pick a topic (e.g., hooks, routing, animations) or ask me what I want to learn.
+- Explain it like I’m new to coding, using a small, fun example (e.g., "Make a button bounce with Expo animations").
+- Suggest one file to try it in (e.g., "Add this to components/Button.tsx").
+- End with: "Want to try this now or explore something else?"
+
+/build-mini
+Guide me to build a tiny, fun feature for my app in React Native/Expo or Next.js.
+- Suggest a simple idea (e.g., "Add a spinning loader" or "Make a dark mode toggle").
+- Break it into 3-5 easy steps with one file to change or create.
+- Keep it playful and quick (under 20 lines of code).
+- Ask: "Ready to build this? Or want another idea?"
+
+/quiz
+Test my coding knowledge with a quick, fun quiz about React Native, Expo, or Next.js.
+- Ask 3-5 short questions (e.g., "What does useState do?" or "How do you fetch data in Next.js?").
+- Give friendly feedback after each answer (e.g., "Nice! It also helps with...").
+- Suggest one topic to learn more about based on my answers.
+- End with: "Enjoyed the quiz? Want another round?"
+
+/refactor-fun
+Make my code better and teach me a trick in the process.
+- Look at a file I specify (e.g., "components/journal/MealCard.tsx").
+- Suggest one improvement (e.g., "Use a custom hook for timestamp formatting").
+- Show the before and after code, explaining why it’s better.
+- Add a fun twist (e.g., "Now it’s so clean, it deserves a party emoji 🎉").
+- Ask: "Want to apply this or refactor something else?"
+
+/starter
+Set up a small, working project template for me to play with.
+- Create a basic React Native/Expo or Next.js app idea (e.g., "A color picker app").
+- List 2-3 files with simple code to get it running.
+- Include one fun feature (e.g., "Tap to change colors randomly").
+- Save it in @Docs as [project-name]-starter.md.
+- Say: "Here’s your starter in @Docs. Want to build it or tweak it?"
+
+/inspire
+Share a cool app idea or feature to spark my creativity.
+- Suggest something simple but exciting (e.g., "A mood tracker with emoji faces").
+- Describe how it could work in React Native/Expo or Next.js (2-3 sentences).
+- List 2-3 files it might need.
+- Ask: "Like this idea? Want to plan it or hear another?"
+
+/connect
+Show me how to link my React Native/Expo mobile app with a Next.js web app.
+- Pick one shared feature (e.g., "Sync meal entries via an API").
+- Explain the mobile side and web side in 3-5 steps.
+- Suggest files to create or change (e.g., "api/meals.js in Next.js").
+- End with: "Ready to connect them? Or want a different example?"
