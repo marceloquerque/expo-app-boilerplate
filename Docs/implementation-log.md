@@ -13,9 +13,17 @@ Displays individual meal entries in the journal timeline with an image and times
 - Formats timestamps into readable time format (HH:mm)
 
 **Notes:**  
-- Currently uses basic styling that can be enhanced in future iterations
-- Relies on the device's width for responsive image sizing
-- Can be extended to include duration and status indicators in future iterations
+- Uses responsive sizing based on device width
+- Implements exact 3:2 aspect ratio for images
+- Follows mockup design specifications
+
+**Updates (Card Design Improvements):**
+- Added centralized color definitions
+- Implemented continuous timeline with masked dots
+- Refined typography and spacing
+- Added proper shadow effects
+- Improved image container handling
+- Commit: `style: improve MealCard design to match mockup`
 
 ### 2. `app/(tabs)/_layout.tsx`
 **Purpose:**  
@@ -60,6 +68,17 @@ Placeholder screen for future dashboard functionality.
 - Minimal implementation as per MVP requirements
 - Ready for future feature implementation
 
+## Design Constants
+```typescript
+const COLORS = {
+    accent: '#FF6B6B',
+    timeline: '#E5E5E5',
+    timeText: '#666666',
+    cardBackground: '#FFFFFF',
+    shadow: '#000000',
+};
+```
+
 ## Dependencies Added
 ```bash
 @react-navigation/native
@@ -70,20 +89,28 @@ react-native-safe-area-context
 
 ## Next Steps
 According to our plan, we can proceed with:
-1. Timeline Visual implementation
-2. Enhanced UI features
-3. Performance optimizations and polish
+1. Add duration indicators
+2. Add status indicators (fasting/regular)
+3. Add loading states and pull-to-refresh
 
 ## Testing Notes
 - Basic functionality is working
 - Navigation between tabs is smooth
 - Image loading and display is functional
 - Time formatting is working correctly
+- Timeline visualization matches mockup
 
 ## Future Considerations
 - Add proper error handling for image loading
 - Implement camera/gallery integration
 - Add data persistence
-- Enhance timeline visualization
 - Add loading states and pull-to-refresh
-- Implement proper TypeScript strict mode 
+- Implement proper TypeScript strict mode
+- Handle different image aspect ratios
+- Add press state animations and haptic feedback
+
+## TODOs
+1. Handle different image aspect ratios
+2. Add press state animations and haptic feedback
+3. Optimize image loading performance
+4. Add error states for failed image loads 
