@@ -14,41 +14,51 @@ Before proceeding with any coding task, create or update a file in the @Docs dir
   - Include the Git commit message after each update (e.g., "Commit: feat: add delete button").
 - At the end of the file, add a "Dependencies Added" section listing new dependencies and their purpose (e.g., "@expo/vector-icons - Adds icons to buttons").
 
-/guide
+/Guide
 Act as a mentor for a junior developer on this task. Provide clear, step-by-step instructions, specifying which files to find and how to edit them. You are the Architect agent directing the Editor or Tests Generator agent.
 
-/update-progress
-Update the .md file in @Docs by marking completed tasks with ✅ based on our current progress.
-
-/design
+/Design
 Analyze and plan the system design.
 - Consider the project’s scale, constraints, performance needs, and requirements. Write a 3-5 paragraph tradeoff analysis comparing design options.
 - Ask 4-6 clear questions about the system’s scale and goals before proposing a plan. After answers, draft a detailed system design and request approval.
 - If feedback is given, discuss tradeoffs, revise the design, and ask for approval again.
 
-/create-plan
-Create a phased implementation plan for the [app-name] app based on @[docs-folder]/[prd-file].md and @[docs-folder]/[ui-file].md, using a UI-first approach.
+/Update-progress
+Update the [plan-file]-plan.md file in [docs-folder] by marking completed tasks with ✅ based on our current progress.
+- Use [app-name] for an app-wide plan or [feature-name] for a feature plan as the [plan-file].
+
+/Create-feature-plan
+Create a phased implementation plan for the [feature-name] feature in the [app-name] app, based on [docs-folder]/[app-name]-plan.md.
+- Split it into phases (e.g., "Basic Setup", "Styling", "Functionality") with clear steps, each with a checkbox [ ].
+- Keep steps small and testable for quick wins (e.g., "Show a bubble on screen").
+- Stay flexible for tweaks as we go.
+- Save it as [feature-name]-plan.md in [docs-folder].
+- End with: "Here’s the feature plan in [docs-folder]/[feature-name]-plan.md. Do you approve?"
+
+/Create-plan
+Create a phased implementation plan for the [app-name] app based on [docs-folder]/[prd-file].md and [docs-folder]/[ui-file].md, using a UI-first approach.
 - Split it into phases (e.g., "Basic Structure", "Layout", "Features") with clear steps, each with a checkbox [ ].
 - Start with basic components and functionality, then improve layout, and later add features like data and navigation.
 - Keep steps small and testable for quick wins (e.g., "Show a card on screen").
 - Stay flexible for tweaks as we go.
-- Save it as [app-name]-plan.md in @[docs-folder].
-- End with: "Here’s the plan in @[docs-folder]/[app-name]-plan.md. Do you approve?"
+- Save it as [app-name]-plan.md in [docs-folder].
+- End with: "Here’s the plan in [docs-folder]/[app-name]-plan.md. Do you approve?"
 
-/plan
-Create a step-by-step plan for a specific task in the [app-name] app, without coding.
+/ Plan
+Create a step-by-step plan for a specific task in the [feature-name] feature of the [app-name] app, without coding.
+- Base it on the [feature-name]-plan.md in [docs-folder].
 - List assumptions and ask 3-5 clear questions if I haven’t explained enough.
 - For each step, include:
   - What to do (e.g., "Add a delete button").
   - Why it’s needed (e.g., "To remove entries").
-  - Files to change or create (e.g., "[component-folder]/MealCard.tsx").
+  - Files to change or create (e.g., "[component-folder]/MealCard.tsx" or "[screen-folder]/JournalScreen.tsx").
   - Risks (e.g., "Might break layout if not styled").
 - End with: "Here’s the task plan. Do you approve?"
 - If approved:
   1. Check all related code files.
   2. Get full context.
-  3. Save it as [task-name]-plan.md in @[docs-folder].
-  4. Say: "Plan approved. [task-name]-plan.md created in @[docs-folder]. What’s next?"
+  3. Save it as [task-name]-plan.md in [docs-folder].
+  4. Say: "Plan approved. [task-name]-plan.md created in [docs-folder]. What’s next?"
 - If not approved, tweak it based on feedback and ask again.
 
 /implement

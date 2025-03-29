@@ -12,6 +12,50 @@
   - Simple styling (pill shape)
   - Calculate and format duration
 
+### Steps for Basic Bubble Component
+
+1. **Create Component File**
+   - What: Create `FastingBubble.tsx` in components/journal
+   - Why: Establish a new reusable component for displaying fasting periods
+   - Files: `components/journal/FastingBubble.tsx`
+   - Risks: None
+
+2. **Create Date Utils**
+   - What: Create utility functions for time calculations and formatting
+   - Why: Centralize date handling logic for reusability
+   - Files: 
+     - `utils/dateUtils.ts` (new file)
+     - Support Brazilian time format
+   - Risks: 
+     - Timezone handling might affect calculations
+     - Date change edge cases
+
+3. **Create Basic UI Structure**
+   - What: Implement the pill-shaped bubble with time display
+   - Why: Match the design from first-screen-ui.html mockup
+   - Files: `components/journal/FastingBubble.tsx`
+   - Risks:
+     - Layout might break on different screen sizes
+     - Text overflow for long durations
+
+4. **Add Duration Formatting**
+   - What: Format duration into readable "Xh Ym" format with Brazilian locale
+   - Why: Present time differences in a user-friendly way
+   - Files: 
+     - `components/journal/FastingBubble.tsx`
+     - `utils/dateUtils.ts`
+   - Risks:
+     - Brazilian time format edge cases
+     - Different time formats needed for longer periods
+
+5. **Style Integration**
+   - What: Match styling with existing MealCard timeline
+   - Why: Maintain visual consistency
+   - Files: `components/journal/FastingBubble.tsx`
+   - Risks:
+     - Need to align perfectly with timeline
+     - Shadow/elevation might look different on iOS/Android
+
 ## Phase 2: Layout Integration (1-2 hours)
 - [ ] Position bubble between MealCards
   - Add spacing calculation
@@ -64,4 +108,8 @@
 - Handle edge cases (missing timestamps)
 - Consider adding fasting goals/targets
 - Plan for future stats integration
-- Consider adding progress indicators 
+- Consider adding progress indicators
+- Handle multi-day fasting periods
+- Track fasting streaks for analytics
+- Add support for different time zones
+- Implement data collection for fasting analytics 
